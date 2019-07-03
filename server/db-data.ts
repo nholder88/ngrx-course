@@ -598,7 +598,7 @@ export const LESSONS = {
   },
   59: {
     id: 59,
-    "description": "How To Define the Store Initial State",
+    "description": "How To Define the Store Initial AuthState",
     "duration": "9:10",
     "seqNo": 10,
     courseId: 4

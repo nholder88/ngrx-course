@@ -6,6 +6,8 @@ import {EditCourseDialogComponent} from '../edit-course-dialog/edit-course-dialo
 import {MatDialog} from '@angular/material';
 import {map, shareReplay} from 'rxjs/operators';
 import {CoursesHttpService} from '../services/courses-http.service';
+import {AppState} from '../../reducers';
+import {Store} from '@ngrx/store';
 
 
 
@@ -27,8 +29,12 @@ export class HomeComponent implements OnInit {
 
     constructor(
       private dialog: MatDialog,
-      private coursesHttpService: CoursesHttpService) {
+      private coursesHttpService: CoursesHttpService, private store: Store<AppState>) {
 
+      // Watch the store for changes
+     // store.subscribe();
+      // Send an action to the store
+      // store.dispatch();
     }
 
     ngOnInit() {
