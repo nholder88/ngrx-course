@@ -13,42 +13,42 @@ import {isLoggedIn, isLoggedOut} from './auth/auth.selector';
 })
 export class AppComponent implements OnInit {
 
-    loading = true;
-    isLoggedIn$: Observable<boolean>;
-    isLoggedOut$: Observable<boolean>;
+  loading = true;
+  isLoggedIn$: Observable<boolean>;
+  isLoggedOut$: Observable<boolean>;
 
-    constructor(private router: Router, private store: Store<AppState>) {
+  constructor(private router: Router, private store: Store<AppState>) {
 
-    }
+  }
 
-    ngOnInit() {
-      this.isLoggedIn$ = this.store.pipe(select(isLoggedIn));
-      this.isLoggedOut$ = this.store.pipe(select(isLoggedOut));
+  ngOnInit() {
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedIn));
+    this.isLoggedOut$ = this.store.pipe(select(isLoggedOut));
 
-      this.router.events.subscribe(event  => {
-        switch (true) {
-          case event instanceof NavigationStart: {
-            this.loading = true;
-            break;
-          }
-
-          case event instanceof NavigationEnd:
-          case event instanceof NavigationCancel:
-          case event instanceof NavigationError: {
-            this.loading = false;
-            break;
-          }
-          default: {
-            break;
-          }
+    this.router.events.subscribe(event => {
+      switch (true) {
+        case event instanceof NavigationStart: {
+          this.loading = true;
+          break;
         }
-      });
 
-    }
+        case event instanceof NavigationEnd:
+        case event instanceof NavigationCancel:
+        case event instanceof NavigationError: {
+          this.loading = false;
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    });
 
-    logout() {
-this.store.dispatch(new Logout());
+  }
 
-    }
+  logout() {
+    this.store.dispatch(new Logout());
+    this.router.navigateByUrl('/login');
+  }
 
 }
