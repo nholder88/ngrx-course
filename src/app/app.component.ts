@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {select, Store} from '@ngrx/store';
-import {Observable} from 'rxjs';
+import {select, Store} from "@ngrx/store";
+import {Observable} from "rxjs";
+import {map} from 'rxjs/operators';
+import {isLoggedIn, isLoggedOut} from './auth/auth.selectors';
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router} from '@angular/router';
-import {AppState} from './reducers';
-import {Logout} from './auth/auth.actions';
-import {isLoggedIn, isLoggedOut} from './auth/auth.selector';
+import {logout} from './auth/auth.actions';
+import {AppState} from './reducers/reducers';
 
 @Component({
   selector: 'app-root',
@@ -13,42 +14,54 @@ import {isLoggedIn, isLoggedOut} from './auth/auth.selector';
 })
 export class AppComponent implements OnInit {
 
-  loading = true;
-  isLoggedIn$: Observable<boolean>;
-  isLoggedOut$: Observable<boolean>;
+    isLoggedIn$: Observable<boolean>;
 
-  constructor(private router: Router, private store: Store<AppState>) {
+    isLoggedOut$: Observable<boolean>;
 
-  }
+    loading = true;
 
-  ngOnInit() {
-    this.isLoggedIn$ = this.store.pipe(select(isLoggedIn));
-    this.isLoggedOut$ = this.store.pipe(select(isLoggedOut));
+    constructor(private store: Store<AppState>, private router: Router) {
 
-    this.router.events.subscribe(event => {
-      switch (true) {
-        case event instanceof NavigationStart: {
-          this.loading = true;
-          break;
+    }
+
+    ngOnInit() {
+
+      this.router.events.subscribe(event  => {
+        switch (true) {
+          case event instanceof NavigationStart: {
+            this.loading = true;
+            break;
+          }
+
+          case event instanceof NavigationEnd:
+          case event instanceof NavigationCancel:
+          case event instanceof NavigationError: {
+            this.loading = false;
+            break;
+          }
+          default: {
+            break;
+          }
         }
+      });
 
-        case event instanceof NavigationEnd:
-        case event instanceof NavigationCancel:
-        case event instanceof NavigationError: {
-          this.loading = false;
-          break;
-        }
-        default: {
-          break;
-        }
-      }
-    });
+      this.isLoggedIn$ = this.store
+        .pipe(
+          select(isLoggedIn)
+        );
 
-  }
+      this.isLoggedOut$ = this.store
+        .pipe(
+          select(isLoggedOut)
+        );
 
-  logout() {
-    this.store.dispatch(new Logout());
+    }
 
-  }
+    logout() {
+
+      this.store.dispatch(logout());
+
+    }
+
 
 }

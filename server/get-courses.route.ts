@@ -15,24 +15,16 @@ export function getAllCourses(req: Request, res: Response) {
 
     }, 1000);
 
-
-
 }
 
 
-export function getCourseByUrl(req: Request, res: Response) {
+export function getCourseById(req: Request, res: Response) {
 
-    const courseUrl = req.params["courseUrl"];
+    const courseId = req.params["id"];
 
     const courses:any = Object.values(COURSES);
 
-    const course = courses.find(course => course.url == courseUrl);
+    const course = courses.find(course => course.id == courseId);
 
-    setTimeout(() => {
-
-      res.status(200).json(course);
-
-    }, 1000);
-
-
+    res.status(200).json(course);
 }

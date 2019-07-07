@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {HomeComponent} from './home/home.component';
 import {CoursesCardListComponent} from './courses-card-list/courses-card-list.component';
 import {EditCourseDialogComponent} from './edit-course-dialog/edit-course-dialog.component';
+import {CoursesResolver} from './services/courses-resolver.service';
 import {CoursesHttpService} from './services/courses-http.service';
 import {CourseComponent} from './course/course.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -21,23 +22,45 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {RouterModule, Routes} from '@angular/router';
+import {CourseDataService} from './services/course-data.service';
 import { EntityDataService, EntityDefinitionService, EntityMetadataMap} from '@ngrx/data';
 import {compareCourses, Course} from './model/course';
-
+import {CourseEntityService} from './services/course-entity.service';
+import {LessonEntityService} from './services/lesson-entity.service';
 import {compareLessons, Lesson} from './model/lesson';
 
 
 export const coursesRoutes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    component: HomeComponent,
+    resolve: {
+      course: CoursesResolver
+    }
 
   },
   {
-    path: ':courseUrl',
-    component: CourseComponent
+    path: ':id',
+    component: CourseComponent,
+    resolve: {
+      course: CoursesResolver
+    }
   }
 ];
+
+
+const entityMetadata: EntityMetadataMap = {
+  Course: {
+
+    sortComparer: compareCourses,
+    entityDispatcherOptions: {
+      optimisticUpdate: true
+    }
+  },
+  Lesson: {
+    sortComparer: compareLessons
+  }
+};
 
 
 @NgModule({
@@ -74,12 +97,23 @@ export const coursesRoutes: Routes = [
   ],
   entryComponents: [EditCourseDialogComponent],
   providers: [
-    CoursesHttpService
+    CoursesHttpService,
+    CourseDataService,
+    CoursesResolver,
+    CourseEntityService,
+    LessonEntityService
   ]
 })
 export class CoursesModule {
 
-  constructor() {
+  constructor(
+    entityDataService: EntityDataService,
+    courseDataService: CourseDataService,
+    eds: EntityDefinitionService) {
+
+    eds.registerMetadataMap(entityMetadata);
+
+    entityDataService.registerService('Course', courseDataService);
 
   }
 
